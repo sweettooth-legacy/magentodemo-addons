@@ -95,8 +95,7 @@ body {
     height: 100%;
 }
 
-/* NO NEED FOR THIS: */
-.temporary-space {
-    height: 150px;
-    border-bottom: 1px solid black;
+/* Inline Manual:  */
+body .inmplayer-skin-sidebar .inmplayer-panel {
+    top: 70px;
 }
