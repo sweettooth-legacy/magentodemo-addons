@@ -18,6 +18,9 @@
         <reference name="content">
             <block type="tbt_ondemand/header" name="ondemand.header" template="tbt_ondemand/header.phtml" />
         </reference>
+        <reference name="before_body_end">
+            <block type="core/template" name="inline.manual.player.js" after="-" template="rewards/player.phtml" />
+        </reference>
     </default>
     
     <adminhtml_index_login>
@@ -35,6 +38,7 @@
                 </action>
             </block>
             <block type="tbt_ondemand/header" name="ondemand.header" template="tbt_ondemand/header.phtml" />
+            <block type="core/template" name="inline.manual.player.js" after="-" template="tbt_ondemand/player.phtml" />
         </reference>
     </adminhtml_index_login>
 </layout>
