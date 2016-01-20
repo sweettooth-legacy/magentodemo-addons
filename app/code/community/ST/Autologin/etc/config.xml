@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <ST_Autologin>
+            <version>1.0.0.0</version>
+        </ST_Autologin>
+    </modules>
+    <frontend>
+        <routers>
+            <autologin>
+                <use>standard</use>
+                <args>
+                    <module>ST_Autologin</module>
+                    <frontName>autologin</frontName>
+                </args>
+            </autologin>
+        </routers>
+    </frontend>
+   <global>
+        <models>
+            <autologin>
+                <class>ST_Autologin_Model</class>
+            </autologin>
+        </models>
+        <events>
+            <controller_action_predispatch_adminhtml_index_login>
+                <observers>
+                    <autologin_adminhtml_controller_action_predispatch_adminhtml>
+                        <type>singleton</type>
+                        <class>autologin/observer</class>
+                        <method>preLoginDispatch</method>
+                    </autologin_adminhtml_controller_action_predispatch_adminhtml>
+                </observers>
+            </controller_action_predispatch_adminhtml_index_login>
+        </events>
+    </global>
+
+
+
+</config>

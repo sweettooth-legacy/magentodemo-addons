@@ -1,0 +1,38 @@
+<div id="st-header-box">
+    <div id="st-magento-demo-bar">
+        <div class="logo-container">
+            <a href="https://www.sweettoothrewards.com/" title="sweettoothrewards.com" target="_blank">
+                <img height="100%" width="100%" alt="Sweet Tooth" src="<?php echo $this->getSkinUrl('images/tbt_ondemand/logo-white.png'); ?>" />
+            </a>
+        </div>
+        <div class="description">
+            <span class="line1">Sweet Tooth v<?php echo $this->getSweetToothVersion(); ?> for Magento</span>
+            <br/>
+            <span class="line2">Private Front-End Demo</span>
+            <span class="link">
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+                <a href="<?php echo Mage::helper("adminhtml")->getUrl("adminhtml/dashboard/index"); ?>" target="_blank">Admin-Panel Demo</a>
+            </span>
+        </div>
+        <div class="right-controls">
+            <div class="countdown">
+                This store will expire in <span id="st-public-frontend-countdown"></span>
+            </div>
+            <div class="cta-container">
+                <a class="cta" href="https://www.sweettoothrewards.com/pricing/magento/" target="_blank">
+                    <span>Get Sweet Tooth</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    (function () {
+        $$('body')[0].insert({top: $('st-header-box')});
+
+        var expiresAt = <?php echo $this->getExpiryTimestamp(); ?> * 1000;
+        countdown(function (timestamp) {
+            document.getElementById('st-public-frontend-countdown').innerHTML = timestamp.toString();
+        }, expiresAt, countdown.DAYS | countdown.HOURS | countdown.MINUTES);
+    })();
+</script>

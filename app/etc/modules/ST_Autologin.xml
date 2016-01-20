@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<config>
+    <modules>
+        <ST_Autologin>
+            <active>true</active>
+            <codePool>community</codePool>
+        </ST_Autologin>
+    </modules>
+</config>

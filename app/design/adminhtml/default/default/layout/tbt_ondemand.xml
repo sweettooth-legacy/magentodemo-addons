@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<layout>
+    <default>
+
+        <reference name="head">
+            <action method="addLinkRel">
+                <rel>stylesheet</rel>
+                <href>https://fonts.googleapis.com/css?family=Muli</href>
+            </action>
+            <action method="addCss">
+                <stylesheet>tbt_ondemand/css/styles.css</stylesheet>
+            </action>
+            <action method="addJs">
+                <src>ondemand/inline-manual-player.js</src>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="tbt_ondemand/header" name="ondemand.header" template="tbt_ondemand/header.phtml" />
+        </reference>
+    </default>
+    
+    <adminhtml_index_login>
+        <reference name="root">
+            <block type="adminhtml/page_head" name="head" as="head" template="page/head.phtml">
+                <action method="addLinkRel">
+                    <rel>stylesheet</rel>
+                    <href>https://fonts.googleapis.com/css?family=Muli</href>
+                </action>
+                <action method="addCss">
+                    <stylesheet>tbt_ondemand/css/styles.css</stylesheet>
+                </action>
+                <action method="addJs">
+                    <src>ondemand/inline-manual-player.js</src>
+                </action>
+            </block>
+            <block type="tbt_ondemand/header" name="ondemand.header" template="tbt_ondemand/header.phtml" />
+        </reference>
+    </adminhtml_index_login>
+</layout>

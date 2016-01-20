@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<layout>
+    <default>
+        <reference name="head">
+            <block type="core/text" name="google.fonts">
+                <action method="setText">
+                    <text><![CDATA[<link href='https://fonts.googleapis.com/css?family=Muli' rel='stylesheet' type='text/css'>]]></text>
+                </action>
+            </block>
+            <block type="core/text" name="countdown.js">
+                <action method="setText">
+                    <text><![CDATA[<script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/countdown/2.6.0/countdown.js"></script>]]></text>
+                </action>
+            </block>
+            <action method="addCss">
+                <stylesheet>css/tbt_ondemand/styles.css</stylesheet>
+            </action>
+            <action method="addJs">
+                <src>ondemand/inline-manual-player.js</src>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="tbt_ondemand/header" name="ondemand.header" template="tbt_ondemand/header.phtml" />
+        </reference>
+    </default>
+</layout>

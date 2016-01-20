@@ -1,0 +1,100 @@
+body {
+    margin: 0px;
+    padding: 0px;
+}
+#st-header-box {
+    height: 70px;
+}
+#st-magento-demo-bar a,
+#st-magento-demo-bar a:visited {
+    color: white;
+}
+
+#st-magento-demo-bar {
+    background: #C82254;
+    color: white;
+    height: 70px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    font-family: 'Muli', sans-serif;
+    position: fixed;
+    top: 0;
+    z-index: 5000;
+}
+
+#st-magento-demo-bar .logo-container {
+    float: left;
+    width: 50px;
+    height: 50px;
+}
+
+#st-magento-demo-bar .description {
+    float: left;
+    padding-left: 20px;
+    font-weight: 400;
+    line-height: 1.4em;
+    padding-top: 5px;
+}
+
+#st-magento-demo-bar .description .line1 {
+    font-size: 16px;
+}
+#st-magento-demo-bar .description .line2 {
+    font-size: 14px;
+}
+#st-magento-demo-bar .description .link {
+    font-size: 12px;
+}
+#st-magento-demo-bar .right-controls {
+    float: right;
+    text-align: right;
+}
+
+#st-magento-demo-bar .countdown {
+    font-size: 11px;
+    font-style: italic;
+    margin-top: -5px;
+}
+
+#st-magento-demo-bar .cta-container .cta {
+    display: inline-block;
+    box-sizing: border-box;
+    margin: 5px 0px;
+    height: 35px;
+    font-size: 15px;
+    font-weight: bolder;
+    font-family: Muli, sans-serif;
+    border: 1px solid white;
+    padding: 7px 15px;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    position: relative;
+    text-decoration: none;
+    -webkit-transition: color 0.3s, background-color 0.3s, box-shadow 0.3s;
+    transition: color 0.3s, background-color 0.3s, box-shadow 0.3s;
+}
+
+#st-magento-demo-bar .cta-container .cta:before {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0;
+    background-color: rgba(0,0,0,0.1);
+    -webkit-transition: height 0.3s;
+    transition: height 0.3s;
+}
+
+#st-magento-demo-bar .cta-container .cta:hover:before {
+    height: 100%;
+}
+
+/* NO NEED FOR THIS: */
+.temporary-space {
+    height: 150px;
+    border-bottom: 1px solid black;
+}
