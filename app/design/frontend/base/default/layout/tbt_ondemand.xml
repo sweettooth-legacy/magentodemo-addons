@@ -16,9 +16,6 @@
             <action method="addCss">
                 <stylesheet>css/tbt_ondemand/styles.css</stylesheet>
             </action>
-            <action method="addJs">
-                <src>ondemand/inline-manual-player.js</src>
-            </action>
         </reference>
         <reference name="content">
             <block type="tbt_ondemand/header" name="ondemand.header" template="tbt_ondemand/header.phtml" />

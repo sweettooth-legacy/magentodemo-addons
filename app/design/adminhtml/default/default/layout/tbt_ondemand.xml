@@ -11,15 +11,12 @@
             <action method="addCss">
                 <stylesheet>tbt_ondemand/css/styles.css</stylesheet>
             </action>
-            <action method="addJs">
-                <src>ondemand/inline-manual-player.js</src>
-            </action>
         </reference>
         <reference name="content">
             <block type="tbt_ondemand/header" name="ondemand.header" template="tbt_ondemand/header.phtml" />
         </reference>
         <reference name="before_body_end">
-            <block type="core/template" name="inline.manual.player.js" after="-" template="rewards/player.phtml" />
+            <block type="core/template" name="inline.manual.player.js" after="-" template="tbt_ondemand/player.phtml" />
         </reference>
     </default>
     
@@ -32,9 +29,6 @@
                 </action>
                 <action method="addCss">
                     <stylesheet>tbt_ondemand/css/styles.css</stylesheet>
-                </action>
-                <action method="addJs">
-                    <src>ondemand/inline-manual-player.js</src>
                 </action>
             </block>
             <block type="tbt_ondemand/header" name="ondemand.header" template="tbt_ondemand/header.phtml" />
