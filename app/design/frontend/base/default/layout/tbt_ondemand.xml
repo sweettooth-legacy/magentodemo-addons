@@ -24,4 +24,12 @@
             <block type="tbt_ondemand/inlineManual" name="inline.manual.player.js" after="-" template="tbt_ondemand/inlineManual/player.phtml" />
         </reference>
     </default>
+    
+    <customer_account_login>
+        <reference name="customer_form_login">
+            <action method="setTemplate">
+                <template>tbt_ondemand/customer/form/login.phtml</template>
+            </action>
+        </reference>
+    </customer_account_login>
 </layout>
