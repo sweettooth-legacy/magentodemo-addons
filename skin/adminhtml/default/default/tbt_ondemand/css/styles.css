@@ -20,7 +20,7 @@ body {
     font-family: 'Muli', sans-serif;
     position: fixed;
     top: 0;
-    z-index: 5000;
+    z-index: 1000;
 }
 
 #st-magento-demo-bar .logo-container {
