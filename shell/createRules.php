@@ -20,6 +20,8 @@ class TBT_Shell_Create_Rules extends Mage_Shell_Abstract
         'review'                    => false,
         'tag'                       => false,
         'newsletter'                => false,
+        'poll'                      => false,
+        'send-friend'               => false,
         
         // milestone rules
         'birthday'                  => false,
@@ -376,6 +378,56 @@ class TBT_Shell_Create_Rules extends Mage_Shell_Abstract
                 'website_ids' => implode(',', $websites),
                 'customer_group_ids' => implode(',', $customerGroups),
                 'points_conditions' => 'customer_newsletter',
+                'points_action' => 'grant_points',
+                'simple_action' => 'by_percent',
+                'points_currency_id' => 1,
+                'points_amount' => $points,
+                'is_onhold_enabled' => 0,
+                'onhold_duration' => 0
+            );
+            
+            $model = Mage::getModel('rewards/special');
+            $model->loadPost($data);
+            Mage::getSingleton('adminhtml/session')->setPageData($model->getData());
+            
+            $model->save();
+            Mage::getSingleton('adminhtml/session')->setPageData(false);
+        }
+        
+        if ($this->rulesMap['poll']) {
+            $points = 3;
+            
+            $data = array(
+                'name' => $helper->__("Shell Rule - Vote in Polls - %s points", $points),
+                'is_active' => 1,
+                'website_ids' => implode(',', $websites),
+                'customer_group_ids' => implode(',', $customerGroups),
+                'points_conditions' => 'customer_poll',
+                'points_action' => 'grant_points',
+                'simple_action' => 'by_percent',
+                'points_currency_id' => 1,
+                'points_amount' => $points,
+                'is_onhold_enabled' => 0,
+                'onhold_duration' => 0
+            );
+            
+            $model = Mage::getModel('rewards/special');
+            $model->loadPost($data);
+            Mage::getSingleton('adminhtml/session')->setPageData($model->getData());
+            
+            $model->save();
+            Mage::getSingleton('adminhtml/session')->setPageData(false);
+        }
+        
+        if ($this->rulesMap['send-friend']) {
+            $points = 15;
+            
+            $data = array(
+                'name' => $helper->__("Shell Rule - Send Product to a Friend - %s points", $points),
+                'is_active' => 1,
+                'website_ids' => implode(',', $websites),
+                'customer_group_ids' => implode(',', $customerGroups),
+                'points_conditions' => 'customer_send_friend',
                 'points_action' => 'grant_points',
                 'simple_action' => 'by_percent',
                 'points_currency_id' => 1,
@@ -912,7 +964,9 @@ class TBT_Shell_Create_Rules extends Mage_Shell_Abstract
     --sign-up                        Creates a sign up rule
     --review                         Creates a rule that will reward writing reviews
     --tag                            Creates a rule that will reward adding tags
-    --newsletter                     Will reward subscriptins to the newsletter
+    --newsletter                     Will reward when customer subscribes to the newsletter
+    --poll                           Will reward when customer votes in a pool
+    --send-friend                    Will reward when customer sends a product to a friend
         
     \033[32m MILESTONE RULES \033[0m
     --birthday                       Will reward points on the customers birthday

@@ -13,6 +13,8 @@ class TBT_Shell_Trigger_Actions extends Mage_Shell_Abstract
         'review'                    => false,
         'tag'                       => false,
         'newsletter'                => false,
+        'poll'                      => false,
+        'send-friend'               => false,
         'share-referral-link'       => false,
         'facebook-like'             => false,
         'twitter-tweet'             => false,
@@ -168,6 +170,69 @@ class TBT_Shell_Trigger_Actions extends Mage_Shell_Abstract
             $subscriber->save();
         }
         
+        if ($this->rulesMap['poll']) {
+            $pools = Mage::getModel('poll/poll')->getCollection();
+            $pools->addFieldToFilter('active', 1);
+            $pools->setPageSize(1);
+            $pools->getSelect()->order(new Zend_Db_Expr('RAND()'));
+            
+            if (!$pools->getSize()) {
+                die($this->formatError('Could not find an active pool!'));
+            }
+            
+            $poll = $pools->getFirstItem()->load();
+
+            $answers = Mage::getModel('poll/poll_answer')->getCollection();
+            $answers->addPollFilter($poll->getId());
+            $answers->setPageSize(1);
+            $answers->getSelect()->order(new Zend_Db_Expr('RAND()'));
+            
+            $answer = $answers->getFirstItem()->load();
+            
+            $vote = Mage::getModel('poll/poll_vote')
+                ->setPollAnswerId($answer->getId())
+                ->setIpAddress('127.0.0.1')
+                ->setCustomerId($this->customer->getId());
+
+            $poll->addVote($vote);
+            Mage::dispatchEvent('poll_vote_add', array(
+                'poll'  => $poll,
+                'vote'  => $vote
+            ));
+        }
+        
+        if ($this->rulesMap['send-friend']) {
+            $data = array(
+                'sender' => array(
+                    'name' => $this->customer->getName(),
+                    'email' => $this->customer->getEmail(),
+                    'message' => 'Check this product out'
+                ),
+                'recipients' => array(
+                    'name' => array('Sweet Tooth'),
+                    'email' => array('test+sendproduct@sweettoothhq.com')
+                )
+            );
+            
+            $model = Mage::getModel('sendfriend/sendfriend');
+            $model->setRemoteAddr(Mage::helper('core/http')->getRemoteAddr(true));
+            $model->setCookie(Mage::app()->getCookie());
+            $model->setWebsiteId($this->websiteId);
+
+            Mage::register('send_to_friend_model', $model);
+            
+            $product = $this->loadRandomProduct();
+            
+            $model->setSender($data['sender']);
+            $model->setRecipients($data['recipients']);
+            $model->setProduct($product);
+            
+            $validate = $model->validate();
+            if ($validate === true) {
+                $model->send();
+            }
+        }
+        
         if ($this->rulesMap['share-referral-link']) {
             $actionModel = Mage::getModel('rewardssocial2/action')
                 ->setCustomerId($this->customer->getId())
@@ -315,6 +380,8 @@ class TBT_Shell_Trigger_Actions extends Mage_Shell_Abstract
     --review                         Create a review for a random product
     --tag                            Add a tag to a random product
     --newsletter                     Subscribe the customer to the newsletter
+    --poll                           Vote in a poll
+    --send-friend                    Mail a product to a friend
     --share-referral-link            Trigger referral share action
     --facebook-like                  Trigger facebook like
     --twitter-tweet                  Trigger twitter tweet
