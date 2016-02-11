@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <ST_Automation>
+            <version>0.1.0.0</version>
+        </ST_Automation>
+    </modules>
+    <global>
+        <helpers>
+            <st_automation>
+                <class>ST_Automation_Helper</class>
+            </st_automation>
+        </helpers>
+        <models>
+            <st_automation>
+                <class>ST_Automation_Model</class>
+            </st_automation>
+        </models>
+    </global>
+    <crontab>
+        <jobs>
+            <st_automation>
+                <schedule>
+                    <cron_expr>*/5 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>st_automation/cron::run</model>
+                </run>
+            </st_automation>
+        </jobs>
+    </crontab>
+</config>
