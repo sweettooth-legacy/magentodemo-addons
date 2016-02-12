@@ -106,7 +106,7 @@ class ST_Automation_Model_Data extends Varien_Object
             );
         }
         
-        $customer = $helper->loadRandomCustomer()->load();
+        $customer = $helper->loadRandomCustomer();
         $firstname = $customer->getFirstname();
         $lastname = $customer->getLastname();
         
