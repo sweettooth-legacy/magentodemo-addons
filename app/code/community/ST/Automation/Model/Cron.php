@@ -1,7 +1,18 @@
 <?php
 
+/**
+ * Cron Entry point - Execute a random action
+ *
+ * @category   ST
+ * @package    ST_Automation
+ * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
+ */
 class ST_Automation_Model_Cron extends Varien_Object
 {
+    /**
+     * Possible actions with weighted probability
+     * @var array
+     */
     protected $weightMap = array(
         'newCustomerSignUp'                         => 2,
         'newCustomerSignUpFromReferral'             => 3,
@@ -21,13 +32,14 @@ class ST_Automation_Model_Cron extends Varien_Object
         'facebookLike'                              => 5,
         'facebookShare'                             => 5,
         'twitterTweet'                              => 5,
+        'googlePlusone'                             => 5,
         'pinterestPin'                              => 5,
         'sharePurchaseOnFacebook'                   => 5,
         'sharePurchaseOnTwitter'                    => 5
     );
     
     /**
-     * Cron entry point
+     * Cron entry point - will execute a random action
      */
     public function run()
     {
@@ -50,6 +62,12 @@ class ST_Automation_Model_Cron extends Varien_Object
         }
     }
     
+    /**
+     * Generate a random action to perform (each action has a different probability)
+     * 
+     * @return string (method name)
+     * @see self::weightMap for possible methods and their weight
+     */
     public function getRandomAction()
     {
         $randomValue = rand(1, 100);
@@ -63,8 +81,16 @@ class ST_Automation_Model_Cron extends Varien_Object
         }
     }
     
+    /**
+     * Set the customer session to make it look like someone is logged in.
+     * We need this because transfers are not created if nobody is logged in.
+     * 
+     * @param array $data
+     * @return boolean
+     */
     public function updateCustomerSession($data)
     {
+        // Check if there is any customer data in the input
         $key = 'customer';
         
         if (!isset($data[$key])) {
@@ -80,8 +106,18 @@ class ST_Automation_Model_Cron extends Varien_Object
             $customer = Mage::getModel('customer/customer')->load($customer);
         }
         
+        // Set customer session
         Mage::getSingleton('customer/session')
             ->setCustomer($customer)
             ->setCustomerAsLoggedIn($customer);
+        
+        // Save login event in customer log (needed for the inactivity milestone)
+        $storeId = $helper = Mage::helper('st_automation')->getDefaultStoreId();
+        Mage::getModel('log/customer')
+            ->setCustomerId($customer->getId())
+            ->setStoreId($storeId)
+            ->save();
+        
+        return true;
     }
 }

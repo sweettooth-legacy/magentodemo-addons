@@ -1,12 +1,33 @@
 <?php
 
+/**
+ * Automation Executor Model
+ *  
+ * This is were things really happen. Does the actuall job of executing 
+ * the action generated in ST_Automation_Model_Cron. Input data is generated 
+ * in ST_Automation_Model_Data.
+ *
+ * @category   ST
+ * @package    ST_Automation
+ * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
+ */
 class ST_Automation_Model_Executor extends Varien_Object
 {
+    /**
+     * Fetch default helper (load random entries like products, customers, etc.)
+     * @return ST_Automation_Helper_Data
+     */
     public function getHelper()
     {
         return Mage::helper('st_automation');
     }
     
+    /**
+     * Create a new customer (no referral)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function newCustomerSignUp($data)
     {
         $customer = Mage::getModel("customer/customer");
@@ -14,21 +35,47 @@ class ST_Automation_Model_Executor extends Varien_Object
         $customer->save();
     }
     
+    /**
+     * Create a new referred customer (first time referrer)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function newCustomerSignUpFromReferral($data)
     {
         $customer = Mage::getModel("customer/customer");
         $customer->setData($data);
+        
+        Mage::getSingleton('customer/session')
+            ->setCustomer($customer)
+            ->setCustomerAsLoggedIn($customer);
 
         Mage::getModel('rewardsref/observer_createaccount')->attemptReferralCheck(null, null, $customer->getData());
         $customer->save();
     }
     
+    /**
+     * Create a new referred customer where the refferrer referred before.
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function newCustomerSignUpFromRepeatedReferral($data)
     {
         $this->newCustomerSignUpFromReferral($data);
     }
     
-    public function initializeQuote($data) 
+    /**
+     * Create a quote object and set all required data:
+     * - set products
+     * - set billing and shipping address
+     * - set payment 
+     * - set shipping method
+     * 
+     * @param array $data
+     * @return Mage_Sales_Model_Quote
+     */
+    protected function initializeQuote($data) 
     {
         // Initialize quote
         $quote = Mage::getModel('sales/quote')
@@ -80,7 +127,11 @@ class ST_Automation_Model_Executor extends Varien_Object
         return $quote;
     }
     
-    public function invoiceAndShipOrder($order) 
+    /**
+     * Invoice and ship an order
+     * @param Mage_Sales_Model_Order $order
+     */
+    protected function invoiceAndShipOrder($order) 
     {
         // Create invoice
         if (!$order->canInvoice()) {
@@ -107,6 +158,12 @@ class ST_Automation_Model_Executor extends Varien_Object
         }
     }
     
+    /**
+     * Create a new order (no points, invoiced and shipped)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function placeOrder($data)
     {
         // Create Quote
@@ -125,6 +182,12 @@ class ST_Automation_Model_Executor extends Varien_Object
         return $order;
     }
     
+    /**
+     * Create a new order (with points, invoiced and shipped)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function placeOrderWithPoints($data)
     {
         $customer = $data['customer'];
@@ -143,7 +206,7 @@ class ST_Automation_Model_Executor extends Varien_Object
             $quote->collectTotals();
             
             // Calculate maximum points for this order
-            $customerPointsBalance = $customer->getRewardsPointsBalance();
+            $customerPointsBalance = $customer->getIndexedPoints();
             $grandTotal = $quote->getSubtotal();
 
             $step = $rule->getPointsAmount();
@@ -172,16 +235,36 @@ class ST_Automation_Model_Executor extends Varien_Object
         }
     }
     
+    /**
+     * Create a new order for a customer who ordered before
+     * (with points, invoiced and shipped)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function placeRepeatOrderWithPoints($data)
     {
         return $this->placeOrderWithPoints($data);
     }
     
+    /**
+     * Create a new order for a referred customer
+     * (with points, invoiced and shipped)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function placeReferrerOrderWithPoints($data)
     {
         return $this->placeOrderWithPoints($data);
     }
     
+    /**
+     * Create a new order (with points, canceled)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function placeOrderWithPointsAndCancel($data)
     {
         $order = $this->placeOrderWithPoints($data);
@@ -197,6 +280,12 @@ class ST_Automation_Model_Executor extends Varien_Object
         return $order;
     }
     
+    /**
+     * Create a new review (and trigger the rewards)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function reviewProduct($data)
     {   
         $review = Mage::getModel('review/review')->setData($data)->save();
@@ -218,6 +307,12 @@ class ST_Automation_Model_Executor extends Varien_Object
         }
     }
     
+    /**
+     * Create a tag (and trigger the rewards)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function tagProduct($data)
     {
         $tagModel = Mage::getModel('tag/tag')->loadByName($data['tag_name']);
@@ -241,6 +336,12 @@ class ST_Automation_Model_Executor extends Varien_Object
         }
     }
     
+    /**
+     * Vote in a poll
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function voteInPoll($data)
     {
         $vote = Mage::getModel('poll/poll_vote')
@@ -257,6 +358,12 @@ class ST_Automation_Model_Executor extends Varien_Object
         ));
     }
     
+    /**
+     * Send a product to a friend
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function sendProductToFriend($data)
     {
         $model = Mage::getModel('rewards/sendfriend');
@@ -278,6 +385,12 @@ class ST_Automation_Model_Executor extends Varien_Object
         }
     }
     
+    /**
+     * Sign up to the newsletter
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function signUpForNewsletter($data)
     {
         $customer = $data['customer'];
@@ -298,6 +411,12 @@ class ST_Automation_Model_Executor extends Varien_Object
         $subscriber->save();
     }
     
+    /**
+     * Trigger a social action (sharing your referral link)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function shareReferralLink($data)
     {
         $actionModel = Mage::getModel('rewardssocial2/action')
@@ -307,36 +426,89 @@ class ST_Automation_Model_Executor extends Varien_Object
         Mage::getModel('rewardssocial2/transfer')->initiateTransfers($actionModel);
     }
     
+    /**
+     * Trigger a social action - twitter follow
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function twitterFollow($data)
     {
         $this->shareReferralLink($data);
     }
     
+    /**
+     * Trigger a social action - facebook like
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function facebookLike($data)
     {
         $this->shareReferralLink($data);
     }
     
+    /**
+     * Trigger a social action - facebook share
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function facebookShare($data)
     {
         $this->shareReferralLink($data);
     }
     
+    /**
+     * Trigger a social action - twitter tweet
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function twitterTweet($data)
     {
         $this->shareReferralLink($data);
     }
     
+    /**
+     * Trigger a social action - google plus one
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
+    public function googlePlusone($data)
+    {
+        $this->shareReferralLink($data);
+    }
+    
+    /**
+     * Trigger a social action - pinterest pin
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function pinterestPin($data)
     {
         $this->shareReferralLink($data);
     }
     
+    /**
+     * Trigger a social action - share a purchase on facebook
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function sharePurchaseOnFacebook($data)
     {
         $this->shareReferralLink($data);
     }
     
+    /**
+     * Trigger a social action - share a purchase on twitter
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function sharePurchaseOnTwitter($data)
     {
         $this->shareReferralLink($data);

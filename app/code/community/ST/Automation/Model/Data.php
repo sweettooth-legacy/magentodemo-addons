@@ -1,33 +1,66 @@
 <?php
 
+/**
+ * Automation Data Model
+ *  
+ * Generate and return the data needed for each action. This data will be used 
+ * in the executor model
+ *
+ * @category   ST
+ * @package    ST_Automation
+ * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
+ */
 class ST_Automation_Model_Data extends Varien_Object
 {
+    /**
+     * Fetch default helper (load random entries like products, customers, etc.)
+     * @return ST_Automation_Helper_Data
+     */
     public function getHelper()
     {
         return Mage::helper('st_automation');
     }
     
+    /**
+     * Fetch generator helper (generate random data like names, addresses, etc.)
+     * @return ST_Automation_Helper_Generator
+     */
     public function getGenerator()
     {
         return Mage::helper('st_automation/generator');
     }
     
+    /**
+     * Create data for a new customer (no referral)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function newCustomerSignUp()
     {
         $helper = $this->getHelper();
         $generator = $this->getGenerator();
         
+        $firstname = $generator->generateFirstname();
+        $lastname = $generator->generateLastname();
+        
         return array(
             'website_id' => $helper->getDefaultWebsiteId(),
             'store' => $helper->getDefaultStore(),
-            'firstname' => $generator->generateFirstname(),
-            'lastname' => $generator->generateLastname(),
-            'email' => $generator->generateEmail(),
+            'firstname' => $firstname,
+            'lastname' => $lastname,
+            'email' => $generator->generateEmail($firstname, $lastname),
             'password' => $generator->generatePassword(),
             'dob' => date("Y-m-d", strtotime("+1 month"))
         );
     }
     
+    /**
+     * Create data for a new referred customer (first time referrer)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function newCustomerSignUpFromReferral()
     {
         $data = $this->newCustomerSignUp();
@@ -36,6 +69,12 @@ class ST_Automation_Model_Data extends Varien_Object
         return $data;
     }
     
+    /**
+     * Create data for a new referred customer where the refferrer referred before.
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function newCustomerSignUpFromRepeatedReferral()
     {
         $data = $this->newCustomerSignUp();
@@ -44,6 +83,12 @@ class ST_Automation_Model_Data extends Varien_Object
         return $data;
     }
     
+    /**
+     * Create data for a new order (no points)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function placeOrder()
     {
         $helper = $this->getHelper();
@@ -61,15 +106,18 @@ class ST_Automation_Model_Data extends Varien_Object
             );
         }
         
+        $customer = $helper->loadRandomCustomer()->load();
+        $firstname = $customer->getFirstname();
+        $lastname = $customer->getLastname();
+        
         $shipToBillingAddress = rand(0,1) == 1;
-        $billingAddress = $generator->generateFullAddress();
+        $billingAddress = $generator->generateFullAddress($firstname, $lastname);
         $shippingAddress = ($shipToBillingAddress) 
             ? $billingAddress 
             : $generator->generateFullAddress();
                 
-        
         $data = array(
-            'customer' => $helper->loadRandomCustomer(),
+            'customer' => $customer,
             'products' => $products,
             'store' => $helper->getDefaultStore(),
             'billing_address' => $billingAddress,
@@ -82,6 +130,12 @@ class ST_Automation_Model_Data extends Varien_Object
         return $data;
     }
     
+    /**
+     * Create data for a new order (with points, invoiced and shipped)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function placeOrderWithPoints()
     {
         $data = $this->placeOrder();
@@ -93,6 +147,13 @@ class ST_Automation_Model_Data extends Varien_Object
         return $data;
     }
     
+    /**
+     * Create data for a new order for a customer who ordered before
+     * (with points, invoiced and shipped)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function placeRepeatOrderWithPoints()
     {
         $data = $this->placeOrder();
@@ -104,6 +165,13 @@ class ST_Automation_Model_Data extends Varien_Object
         return $data;
     }
     
+    /**
+     * Create data for a new order for a referred customer
+     * (with points, invoiced and shipped)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function placeReferrerOrderWithPoints()
     {
         $data = $this->placeOrder();
@@ -115,6 +183,12 @@ class ST_Automation_Model_Data extends Varien_Object
         return $data;
     }
     
+    /**
+     * Create data for a new order (with points, canceled)
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function placeOrderWithPointsAndCancel()
     {
         $data = $this->placeRepeatOrderWithPoints();
@@ -123,6 +197,12 @@ class ST_Automation_Model_Data extends Varien_Object
         return $data;
     }
     
+    /**
+     * Create data for a new review
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function reviewProduct()
     {
         $helper = $this->getHelper();
@@ -153,18 +233,30 @@ class ST_Automation_Model_Data extends Varien_Object
         );
     }
     
+    /**
+     * Create data for a tag
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function tagProduct()
     {
         $helper = $this->getHelper();
         
         return array(
-            'tag_name' => $this->getGenerator()->generatePassword(),
+            'tag_name' => $this->getGenerator()->generateRandomAdjective(),
             'customer' => $helper->loadRandomCustomer()->getId(),
             'store' => $helper->getDefaultStoreId(),
             'product'  => $helper->loadRandomProduct()->getId()
         );
     }
     
+    /**
+     * Create data for voting in a poll
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function voteInPoll()
     {
         $helper = $this->getHelper();
@@ -185,6 +277,12 @@ class ST_Automation_Model_Data extends Varien_Object
         );
     }
     
+    /**
+     * Create data for sending a product to a friend
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function sendProductToFriend()
     {
         $helper = $this->getHelper();
@@ -206,6 +304,12 @@ class ST_Automation_Model_Data extends Varien_Object
         );
     }
     
+    /**
+     * Create data for subscribing a customer to the newsletter 
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function signUpForNewsletter()
     {
         $helper = $this->getHelper();
@@ -216,6 +320,12 @@ class ST_Automation_Model_Data extends Varien_Object
         );
     }
     
+    /**
+     * Create data for triggering a social action - referral link sharing
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function shareReferralLink()
     {
         $isFacebookShare = rand(0,1) == 1;
@@ -227,6 +337,12 @@ class ST_Automation_Model_Data extends Varien_Object
         );
     }
     
+    /**
+     * Create data for triggering a social action - twitter follow
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function twitterFollow()
     {
         return array(
@@ -235,6 +351,12 @@ class ST_Automation_Model_Data extends Varien_Object
         );
     }
     
+    /**
+     * Create data for triggering a social action - facebook like
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function facebookLike()
     {
         return array(
@@ -244,6 +366,12 @@ class ST_Automation_Model_Data extends Varien_Object
         );
     }
     
+    /**
+     * Create data for triggering a social action - facebook share
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function facebookShare()
     {
         return array(
@@ -253,6 +381,12 @@ class ST_Automation_Model_Data extends Varien_Object
         );
     }
     
+    /**
+     * Create data for triggering a social action - twitter tweet
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function twitterTweet()
     {
         return array(
@@ -262,6 +396,27 @@ class ST_Automation_Model_Data extends Varien_Object
         );
     }
     
+    /**
+     * Create data for triggering a social action - google plus one
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
+    public function googlePlusone()
+    {
+        return array(
+            'customer_id'  => $this->getHelper()->loadRandomCustomer()->getId(),
+            'extra'     => $this->getGenerator()->generatePassword(),
+            'action'    => 'google_plusone'
+        );
+    }
+    
+    /**
+     * Create data for triggering a social action - pinterest pin
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function pinterestPin()
     {
         return array(
@@ -271,6 +426,12 @@ class ST_Automation_Model_Data extends Varien_Object
         );
     }
     
+    /**
+     * Create data for triggering a social action - share a purchase on facebook
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function sharePurchaseOnFacebook()
     {
         $generator = $this->getGenerator();
@@ -287,6 +448,12 @@ class ST_Automation_Model_Data extends Varien_Object
         );
     }
     
+    /**
+     * Create data for triggering a social action - share a purchase on twitter
+     * 
+     * @param array $data
+     * @see ST_Automation_Model_Cron::run()
+     */
     public function sharePurchaseOnTwitter()
     {
         $data = $this->sharePurchaseOnFacebook();
