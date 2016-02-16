@@ -14,21 +14,21 @@
                 </action>
             </block>
             <action method="addCss">
-                <stylesheet>css/tbt_ondemand/styles.css</stylesheet>
+                <stylesheet>css/st_ondemand/styles.css</stylesheet>
             </action>
         </reference>
         <reference name="content">
-            <block type="tbt_ondemand/header" name="ondemand.header" template="tbt_ondemand/header.phtml" />
+            <block type="st_ondemand/header" name="ondemand.header" template="st_ondemand/header.phtml" />
         </reference>
         <reference name="before_body_end">
-            <block type="tbt_ondemand/inlineManual" name="inline.manual.player.js" after="-" template="tbt_ondemand/inlineManual/player.phtml" />
+            <block type="st_ondemand/inlineManual" name="inline.manual.player.js" after="-" template="st_ondemand/inlineManual/player.phtml" />
         </reference>
     </default>
     
     <customer_account_login>
         <reference name="customer_form_login">
             <action method="setTemplate">
-                <template>tbt_ondemand/customer/form/login.phtml</template>
+                <template>st_ondemand/customer/form/login.phtml</template>
             </action>
         </reference>
     </customer_account_login>

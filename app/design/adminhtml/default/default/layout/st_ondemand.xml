@@ -9,14 +9,14 @@
                 <href>https://fonts.googleapis.com/css?family=Muli</href>
             </action>
             <action method="addCss">
-                <stylesheet>tbt_ondemand/css/styles.css</stylesheet>
+                <stylesheet>st_ondemand/css/styles.css</stylesheet>
             </action>
         </reference>
         <reference name="content">
-            <block type="tbt_ondemand/header" name="ondemand.header" template="tbt_ondemand/header.phtml" />
+            <block type="st_ondemand/header" name="ondemand.header" template="st_ondemand/header.phtml" />
         </reference>
         <reference name="before_body_end">
-            <block type="tbt_ondemand/inlineManual" name="inline.manual.player.js" after="-" template="tbt_ondemand/inlineManual/player.phtml" />
+            <block type="st_ondemand/inlineManual" name="inline.manual.player.js" after="-" template="st_ondemand/inlineManual/player.phtml" />
         </reference>
     </default>
     
@@ -28,11 +28,11 @@
                     <href>https://fonts.googleapis.com/css?family=Muli</href>
                 </action>
                 <action method="addCss">
-                    <stylesheet>tbt_ondemand/css/styles.css</stylesheet>
+                    <stylesheet>st_ondemand/css/styles.css</stylesheet>
                 </action>
             </block>
-            <block type="tbt_ondemand/header" name="ondemand.header" template="tbt_ondemand/header.phtml" />
-            <block type="tbt_ondemand/inlineManual" name="inline.manual.player.js" after="-" template="tbt_ondemand/inlineManual/player.phtml" />
+            <block type="st_ondemand/header" name="ondemand.header" template="st_ondemand/header.phtml" />
+            <block type="st_ondemand/inlineManual" name="inline.manual.player.js" after="-" template="st_ondemand/inlineManual/player.phtml" />
         </reference>
     </adminhtml_index_login>
 </layout>

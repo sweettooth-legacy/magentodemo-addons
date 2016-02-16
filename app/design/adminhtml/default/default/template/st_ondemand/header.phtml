@@ -2,16 +2,16 @@
     <div id="st-magento-demo-bar">
         <div class="logo-container">
             <a href="https://www.sweettoothrewards.com/" title="sweettoothrewards.com" target="_blank">
-                <img height="100%" width="100%" alt="Sweet Tooth" src="<?php echo $this->getSkinUrl('images/tbt_ondemand/logo-white.png'); ?>" />
+                <img height="100%" width="100%" alt="Sweet Tooth" src="<?php echo $this->getSkinUrl('st_ondemand/images/logo-white.png'); ?>" />
             </a>
         </div>
         <div class="description">
             <span class="line1">Sweet Tooth v<?php echo $this->getSweetToothVersion(); ?> for Magento</span>
             <br/>
-            <span class="line2">Private Front-End Demo</span>
+            <span class="line2">Private Admin-Panel Demo</span>
             <span class="link">
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                <a href="<?php echo Mage::helper("adminhtml")->getUrl("adminhtml/dashboard/index"); ?>" target="_blank">Admin-Panel Demo</a>
+                <a href="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB); ?>" target="_blank">Front-End Demo</a>
             </span>
         </div>
         <div class="right-controls">
@@ -26,10 +26,10 @@
         </div>
     </div>
 </div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/countdown/2.6.0/countdown.js"></script>
 <script type="text/javascript">
+    $$('body')[0].insert({top: $('st-header-box')});
     (function () {
-        $$('body')[0].insert({top: $('st-header-box')});
-
         var expiresAt = <?php echo $this->getExpiryTimestamp(); ?> * 1000;
         countdown(function (timestamp) {
             document.getElementById('st-public-frontend-countdown').innerHTML = timestamp.toString();
