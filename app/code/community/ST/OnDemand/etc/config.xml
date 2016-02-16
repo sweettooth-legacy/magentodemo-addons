@@ -1,50 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
     <modules>
-        <TBT_OnDemand>
+        <ST_OnDemand>
             <version>1.0.0.0</version>
-        </TBT_OnDemand>
+        </ST_OnDemand>
     </modules>
     <global>
         <blocks>
-            <tbt_ondemand>
-                <class>TBT_OnDemand_Block</class>
-            </tbt_ondemand>
+            <st_ondemand>
+                <class>ST_OnDemand_Block</class>
+            </st_ondemand>
         </blocks>
         <helpers>
-            <tbt_ondemand>
-                <class>TBT_OnDemand_Helper</class>
-            </tbt_ondemand>
+            <st_ondemand>
+                <class>ST_OnDemand_Helper</class>
+            </st_ondemand>
         </helpers>
         <models>
-            <tbt_ondemand>
-                <class>TBT_OnDemand_Model</class>
-                <resourceModel>tbt_ondemand_resource</resourceModel>
-            </tbt_ondemand>
-            <tbt_ondemand_resource>
-                <class>TBT_OnDemand_Model_Resource</class>
+            <st_ondemand>
+                <class>ST_OnDemand_Model</class>
+                <resourceModel>st_ondemand_resource</resourceModel>
+            </st_ondemand>
+            <st_ondemand_resource>
+                <class>ST_OnDemand_Model_Resource</class>
                 <entities>
                     <instance>
                         <table>instances</table>
                     </instance>
                 </entities>
-            </tbt_ondemand_resource>
+            </st_ondemand_resource>
         </models>
         <resources>
-            <tbt_ondemand_write>
+            <st_ondemand_write>
                 <connection>
-                    <use>tbt_ondemand_setup</use>
+                    <use>st_ondemand_setup</use>
                 </connection>
-            </tbt_ondemand_write>
-            <tbt_ondemand_read>
+            </st_ondemand_write>
+            <st_ondemand_read>
                 <connection>
-                    <use>tbt_ondemand_setup</use>
+                    <use>st_ondemand_setup</use>
                 </connection>
-            </tbt_ondemand_read>
-            <tbt_ondemand_setup>
+            </st_ondemand_read>
+            <st_ondemand_setup>
                 <setup>
-                    <module>TBT_OnDemand</module>
-                    <class>TBT_OnDemand_Model_Resource_Setup</class>
+                    <module>ST_OnDemand</module>
+                    <class>ST_OnDemand_Model_Resource_Setup</class>
                 </setup>
                 <connection>
                     <host><![CDATA[localhost]]></host>
@@ -56,24 +56,24 @@
                     <type>pdo_mysql</type>
                     <active>1</active>
                 </connection>
-            </tbt_ondemand_setup>
+            </st_ondemand_setup>
         </resources>
     </global>
     <frontend>
         <layout>
             <updates>
-                <tbt_ondemand>
-                    <file>tbt_ondemand.xml</file>
-                </tbt_ondemand>
+                <st_ondemand>
+                    <file>st_ondemand.xml</file>
+                </st_ondemand>
             </updates>
         </layout>
     </frontend>
     <adminhtml>
         <layout>
             <updates>
-                <tbt_ondemand>
-                    <file>tbt_ondemand.xml</file>
-                </tbt_ondemand>
+                <st_ondemand>
+                    <file>st_ondemand.xml</file>
+                </st_ondemand>
             </updates>
         </layout>
     </adminhtml>

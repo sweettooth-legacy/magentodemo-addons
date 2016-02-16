@@ -1,6 +1,6 @@
 <?php
 
-class TBT_OnDemand_Block_Header extends Mage_Core_Block_Template
+class ST_OnDemand_Block_Header extends Mage_Core_Block_Template
 {
     /**
      * Get the expiration date of this instance
@@ -8,7 +8,7 @@ class TBT_OnDemand_Block_Header extends Mage_Core_Block_Template
      */
     public function getExpiryTimestamp()
     {
-        $instance = Mage::getModel('tbt_ondemand/instance')->loadCurrentInstance();
+        $instance = Mage::getModel('st_ondemand/instance')->loadCurrentInstance();
         $date = new DateTime($instance->getExpiresAt());
         
         return $date->getTimestamp();

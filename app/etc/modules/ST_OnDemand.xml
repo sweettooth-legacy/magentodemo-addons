@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <config>
     <modules>
-        <TBT_OnDemand>
+        <ST_OnDemand>
             <active>true</active>
             <codePool>community</codePool>
-        </TBT_OnDemand>
+        </ST_OnDemand>
     </modules>
 </config>
