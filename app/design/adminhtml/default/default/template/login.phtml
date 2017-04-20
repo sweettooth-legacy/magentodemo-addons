@@ -54,26 +54,26 @@
                     <div id="messages">
                         <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
                     </div>
-					<!-- Sweet Tooth Code -->
+					<!-- MageRewards Code -->
 					<div style="padding: 8px; margin-bottom: 10px; background-color: white;">
 								<h4 style="display: inline;"><?php echo $this->__('Attention Visitors:') ?> </h4>
-								<?php echo $this->__("This is a demo for Sweet Tooth Rewards on Magento."); ?>
+								<?php echo $this->__("This is a demo for MageRewards"); ?>
 								<br/>
 								<?php echo $this->__("Content on this store is for demo purposes only and is available on a <strong>temporary</strong> basis."); ?>
 					</div>					
 					<div id="newdemo" style="width: 100%; background-color: rgb(187, 17, 17);">
 						<div align="center" style="margin: 0pt; color: rgb(255, 255, 255);">
 						<span style="font-size:8pt">
-							Sweet Tooth Rewards v<?php echo Mage::getConfig()->getNode('modules/TBT_Rewards/version'); ?> Demo
+							MageRewards v<?php echo Mage::getConfig()->getNode('modules/TBT_Rewards/version'); ?> Demo
 						</span>
 							</strong>
 						</div>
 					</div>
-					<!-- Sweet Tooth Code -->
+					<!-- MageRewards Code -->
                     <div class="input-box input-left"><label for="username"><?php echo Mage::helper('adminhtml')->__('User Name: (demo)') ?></label><br/>
                         <input type="text" id="username" name="login[username]" value="demo" class="required-entry input-text" /></div>
-                    <div class="input-box input-right"><label for="login"><?php echo Mage::helper('adminhtml')->__('Password: (sweettooth)') ?></label><br />
-                        <input type="password" id="login" name="login[password]" class="required-entry input-text" value="sweettooth" /></div>
+                    <div class="input-box input-right"><label for="login"><?php echo Mage::helper('adminhtml')->__('Password: (magerewards)') ?></label><br />
+                        <input type="password" id="login" name="login[password]" class="required-entry input-text" value="magerewards" /></div>
                     <?php echo $this->getChildHtml('form.additional.info'); ?>
                     <div class="clear"></div>
                     <div class="form-buttons">
